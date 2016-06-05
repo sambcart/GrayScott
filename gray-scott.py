@@ -39,7 +39,7 @@ def save_png(arr, filename, mapper, size, smooth=True):
 if __name__ == "__main__":
     NORM      = plt.Normalize(vmin=0, vmax=0.336)
     CMAPPER   = plt.cm.ScalarMappable(norm=NORM, cmap=plt.cm.magma)
-    GRID_SIZE = 50
+    GRID_SIZE = 500
     MAX_TIME  = 18000
 
     A = np.ones((GRID_SIZE, GRID_SIZE))
@@ -50,8 +50,8 @@ if __name__ == "__main__":
     f = 0.037
     k = 0.059
 
-    f_str = string.zfill(int(f*100000), 5)
-    k_str = string.zfill(int(k*100000), 5)
+    f_str = string.zfill(int(f*10**5), 5)
+    k_str = string.zfill(int(k*10**5), 5)
 
     A, B = randseed(A, B, dA, dB, f, k)
 
