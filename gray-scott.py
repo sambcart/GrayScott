@@ -61,4 +61,3 @@ if __name__ == "__main__":
             filename = "grayscott-%s-%s-%d.png" % (f_str, k_str, n)
             #filename = "grayscott-%d.png" % int(time.time())
             save_png(B, filename, CMAPPER, 1000, False)
-            #save_png(B, filename, CMAPPER, 1000, False)
