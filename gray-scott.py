@@ -55,9 +55,9 @@ if __name__ == "__main__":
 
     A, B = randseed(A, B, dA, dB, f, k)
 
-    for n in range(MAX_RUNTIME+1):
+    for n in range(MAX_TIME+1):
         A, B = update(A, B, dA, dB, f, k)
-        if n % (MAX_RUNTIME / 300) == 0:
+        if n % (MAX_TIME / 300) == 0:
             filename = "grayscott-%s-%s-%d.png" % (f_str, k_str, n)
             #filename = "grayscott-%d.png" % int(time.time())
             save_png(B, filename, CMAPPER, 1000, False)
