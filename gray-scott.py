@@ -15,15 +15,6 @@ matplotlib.rcParams["backend"] = "Qt4Agg"
 
 class GSSystem(object):
 
-    """
-    Depends on:
-      random
-      numpy
-      scipy.signal
-      matplotlib.pyplot
-      matplotlib.animation
-    """
-
     def __init__(self, A, B, f, k, dA, dB, dt=1):
         self.A = A
         self.B = B
