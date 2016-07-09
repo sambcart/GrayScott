@@ -1,63 +1,78 @@
-import string, time, random
+#### Libraries
+# Standard library
+import random
+
+# Third-party libraries
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib
 
-from scipy import ndimage, signal
-from PIL import Image
+from matplotlib import pyplot as plt
+from matplotlib import animation
+from scipy import signal
 
-def update(A, B, dA, dB, f, k, dt=0.5, kernel=np.array(
-         [[ 0.104, 0.146, 0.104 ],
-          [ 0.146,-1.000, 0.146 ],
-          [ 0.104, 0.146, 0.104 ]])):
-    lapA = signal.convolve2d(A, kernel, mode='same', boundary='wrap')
-    lapB = signal.convolve2d(B, kernel, mode='same', boundary='wrap')
-    return A + dt * (dA * lapA - A * B * B + f * (1 - A)),\
-           B + dt * (dB * lapB + A * B * B - (k + f) * B)
+matplotlib.rcParams["backend"] = "Qt4Agg"
 
-def randseed(A, B, dA, dB, f, k, dt=0.5, count=10, duration=30):
-    m, n = B.shape
-    ps = [(random.randint(0,m-1), random.randint(0,n-1)) for i in range(count)]
-    for i in range(duration):
-        for (m,n) in ps:
-            B[m,n] += 0.1
-        A, B = update(A, B, dA, dB, f, k, dt)
-    return A, B
 
-def arr_stretch(arr, shape):
-    m0, n0 = arr.shape
-    m1, n1 = shape
-    return np.kron(arr, [[1] * (n1 / n0)] * (m1 / m0))
+class GSSystem(object):
 
-def save_png(arr, filename, mapper, size, smooth=True):
-    temp = arr_stretch(arr, (size, size))
-    if smooth:
-        temp = ndimage.gaussian_filter(temp, 2)
-    im = Image.fromarray(np.uint8(mapper.to_rgba(temp)*255))
-    im = im.resize((size, size))
-    im.save(filename)
+    """
+    Depends on:
+      random
+      numpy
+      scipy.signal
+      matplotlib.pyplot
+      matplotlib.animation
+    """
+
+    def __init__(self, A, B, f, k, dA, dB, dt=1):
+        self.A = A
+        self.B = B
+        self.f = f
+        self.k = k
+        self.dA = dA
+        self.dB = dB
+        self.dt = dt
+
+    def seed(self, count, duration=30):
+        m, n = self.B.shape
+        ypts = [m/2] + [random.randint(0, m-1) for i in xrange(count-1)]
+        xpts = [n/2] + [random.randint(0, n-1) for i in xrange(count-1)]
+        for i in xrange(duration):
+            self.B[ypts, xpts] += 0.1
+            self.update()
+
+    def update(self, kernel=np.array(
+              [[ 0.05, 0.20, 0.05 ],
+               [ 0.20,-1.00, 0.20 ],
+               [ 0.05, 0.20, 0.05 ]])):
+        lapA = signal.convolve2d(self.A, kernel, mode="same", boundary="wrap")
+        lapB = signal.convolve2d(self.B, kernel, mode="same", boundary="wrap")
+        conv = self.A * self.B * self.B
+        delta_A = self.dA * lapA - conv + self.f * (1 - self.A)
+        delta_B = self.dB * lapB + conv - (self.k + self.f) * self.B
+        self.A += self.dt * delta_A
+        self.B += self.dt * delta_B
+
+    def animate(self):
+        fig = plt.figure()
+        im = plt.imshow(self.B, cmap=plt.cm.magma, vmin=0, vmax=0.3375)
+
+        def anim_func(_):
+            self.update()
+            im.set_data(self.B)
+            return im
+
+        anim = animation.FuncAnimation(fig, anim_func, interval=1)
+        plt.show()
+
 
 if __name__ == "__main__":
-    NORM      = plt.Normalize(vmin=0, vmax=0.336)
-    CMAPPER   = plt.cm.ScalarMappable(norm=NORM, cmap=plt.cm.magma)
-    GRID_SIZE = 500
-    MAX_TIME  = 18000
+    gs = GSSystem(np.ones((80, 80)),
+                  np.zeros((80, 80)),
+                  0.03,
+                  0.062,
+                  0.64,
+                  0.32)
 
-    A = np.ones((GRID_SIZE, GRID_SIZE))
-    B = np.zeros((GRID_SIZE, GRID_SIZE))
-
-    dA = 1.0
-    dB = 0.5
-    f = 0.037
-    k = 0.059
-
-    f_str = string.zfill(int(f*10**5), 5)
-    k_str = string.zfill(int(k*10**5), 5)
-
-    A, B = randseed(A, B, dA, dB, f, k)
-
-    for n in range(MAX_TIME+1):
-        A, B = update(A, B, dA, dB, f, k)
-        if n % (MAX_TIME / 300) == 0:
-            filename = "grayscott-%s-%s-%d.png" % (f_str, k_str, n)
-            #filename = "grayscott-%d.png" % int(time.time())
-            save_png(B, filename, CMAPPER, 1000, False)
+    gs.seed(5)
+    gs.animate()
