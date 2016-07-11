@@ -2,7 +2,7 @@
 grayscott.py
 ~~~~~~~~~~~~
 
-Library for modelling a Gray-Scott reaction-diffusion
+Library for modeling a Gray-Scott reaction-diffusion
 system using numpy, scipy, and matplotlib. If problems
 arise from matplotlib's backend, either install QtPy, GTK,
 or try your luck with "template"...
