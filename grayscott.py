@@ -110,7 +110,7 @@ if __name__ == "__main__":
             assert(key in default_kwargs.keys())
             kwargs[key] = float(val)
 
-    except ValueError:
+    except (TypeError, AssertionError, ValueError):
         print "Bad usage, using default values."
         kwargs = default_kwargs.copy()
 
