@@ -1,5 +1,16 @@
 # GrayScott
-Library for modeling a Gray-Scott reaction-diffusion system using numpy, scipy, and matplotlib. If problems arise from matplotlib's backend, try installing QtPy or GTK.
+Library for modeling a Gray-Scott reaction-diffusion system. If problems arise from matplotlib's backend, try installing QtPy or GTK.
+
+Dependencies include:
+
+*    `numpy`
+*    `scipy`
+*    `cython`
+*    `matplotlib`
+
+To install, run:
+
+    $ python setup.py install
 
 The following are all valid uses of GrayScott:
     
