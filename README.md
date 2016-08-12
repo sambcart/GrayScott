@@ -1,6 +1,8 @@
 # GrayScott
 Library for modeling a Gray-Scott reaction-diffusion system. If problems arise from matplotlib's backend, try installing QtPy or GTK.
 
+![](/img/output_NaVWV5.gif?raw=true "animation")
+
 Dependencies include:
 
 *    `numpy`
