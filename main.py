@@ -33,4 +33,4 @@ if __name__ == "__main__":
     gs = GSSystem(**gs_kwargs)
     gs.seed(SEED_CT, SEED_DUR)
     
-    animate_gs(gs, CMAP, VMIN, VMAX)
+    animate_gs(gs, CMAP, VMIN, VMAX, frame_step=50)
